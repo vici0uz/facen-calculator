@@ -27,6 +27,16 @@
         label="Presencial"
         no-caps
       />
+
+      <q-btn
+        class="q-mt-xl"
+        color="white"
+        text-color="blue"
+        unelevated
+        to="/semipresencial"
+        label="Semipresencial"
+        no-caps
+      />
     </div>
   </div>
 </template>
@@ -38,3 +48,9 @@ import { defineComponent } from 'vue';
 //   name: 'ErrorNotFound'
 // });
 </script>
+<style scoped lang="scss">
+.q-btn {
+  margin-left: 5px;
+  margin-right: 5px;
+}
+</style>

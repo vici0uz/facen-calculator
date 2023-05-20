@@ -27,6 +27,13 @@
                   {{ firmas }} <b>Firmas</b>
                 </div>
               </div>
+              <q-space></q-space>
+              <q-table
+                :columns="columns"
+                v-if="tieneFirma"
+                :rows="rows"
+                hide-pagination
+              ></q-table>
               <!-- <div class="badge" v-if="firmas > 0">
                 <div class="text-center">
                   <h3>
@@ -47,7 +54,10 @@
                   label="Peso examenes"
                   :rules="[
                     (val) => !!val || 'Requerido',
-                    (val) => Number(val) <= 100 || 'No puede ser mayor a 100'
+                    (val) => Number(val) <= 100 || 'No puede ser mayor a 100',
+                    (val) =>
+                      checkVals(val) ||
+                      'La suma de los pesos no debe ser mayor a 40'
                   ]"
                   prefix="%"
                   clearable
@@ -91,14 +101,6 @@
                 label="Trabajo Práctico"
               />
 
-              <q-toggle
-                size="70px"
-                color="green"
-                v-model="tieneParticipacion"
-                val="true"
-                label="Participación"
-              />
-
               <div class="row" v-if="tieneTP">
                 <q-input
                   type="number"
@@ -109,7 +111,10 @@
                   dense
                   :rules="[
                     (val) => (tieneTP && !!val) || 'Requerido',
-                    (val) => Number(val) <= 100 || 'No puede ser mayor a 100'
+                    (val) => Number(val) <= 100 || 'No puede ser mayor a 100',
+                    (val) =>
+                      checkVals(val) ||
+                      'La suma de los pesos no puede ser mayor a 100'
                     // (val) => Number(val) < 100 || 'No puede ser mayor a 100'
                   ]"
                 />
@@ -129,6 +134,13 @@
                   ]"
                 />
               </div>
+              <q-toggle
+                size="70px"
+                color="green"
+                v-model="tieneParticipacion"
+                val="true"
+                label="Participación"
+              />
               <div class="row" v-if="tieneParticipacion">
                 <q-input
                   type="number"
@@ -139,7 +151,10 @@
                   dense
                   :rules="[
                     (val) => (tieneParticipacion && !!val) || 'Requerido',
-                    (val) => Number(val) <= 100 || 'No puede ser mayor a 100'
+                    (val) => Number(val) <= 100 || 'No puede ser mayor a 100',
+                    (val) =>
+                      checkVals(val) ||
+                      'La suma de los pesos no puede ser mayor a 100'
                   ]"
                 />
                 <q-space />
@@ -194,13 +209,47 @@ const participacion = ref(0);
 const acumulado = ref(0);
 const firmas = ref(0);
 const formRef = ref();
-
+const rows = ref([]);
+const columns = [
+  { name: 'nota', field: 'nota', label: 'Nota', align: 'center' },
+  { name: 'puntaje', field: 'puntaje', label: 'Puntaje' }
+];
 const githubPro = 'https://github.com/vici0uz';
 
 function openGithub() {
   window.open(githubPro, '_blank', 'noreferrer');
 }
 
+function rowMaker() {
+  const notas = [
+    { nota: 2, divisor: 60 },
+    { nota: 3, divisor: 70 },
+    { nota: 4, divisor: 80 },
+    { nota: 5, divisor: 90 }
+  ];
+  rows.value.length = 0;
+  notas.forEach((el, index) => {
+    const row = {
+      nota: el.nota,
+      puntaje: Math.round(
+        (el.divisor * 100) / el.divisor - (acumulado.value * 40) / el.divisor
+      )
+    };
+    rows.value.push(row);
+  });
+}
+function checkVals(vals) {
+  if (Number(vals) > 0) {
+    let total: number =
+      Number(pesoExamenes.value ? pesoExamenes.value : 0) +
+      Number(pesoParticipacion.value ? pesoParticipacion.value : 0) +
+      Number(pesoTP.value ? pesoTP.value : 0);
+    if (total > 100) {
+      return false;
+    }
+  }
+  return true;
+}
 watch(
   () => [
     primerParcial.value,
@@ -235,6 +284,7 @@ watch(
       if (acumulado.value >= 60) {
         firmas.value = 2;
       }
+      rowMaker();
     } else {
       tieneFirma.value = false;
       firmas.value = 0;
