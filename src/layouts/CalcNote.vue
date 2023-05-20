@@ -114,7 +114,7 @@
                     (val) => Number(val) <= 100 || 'No puede ser mayor a 100',
                     (val) =>
                       checkVals(val) ||
-                      'La suma de los pesos no puede ser mayor a 100'
+                      'La suma de los pesos no debe ser mayor a 40'
                     // (val) => Number(val) < 100 || 'No puede ser mayor a 100'
                   ]"
                 />
@@ -154,7 +154,7 @@
                     (val) => Number(val) <= 100 || 'No puede ser mayor a 100',
                     (val) =>
                       checkVals(val) ||
-                      'La suma de los pesos no puede ser mayor a 100'
+                      'La suma de los pesos no debe ser mayor a 40'
                   ]"
                 />
                 <q-space />
@@ -214,7 +214,7 @@ const columns = [
   { name: 'nota', field: 'nota', label: 'Nota', align: 'center' },
   { name: 'puntaje', field: 'puntaje', label: 'Puntaje' }
 ];
-const githubPro = 'https://github.com/vici0uz';
+const githubPro = 'https://github.com/vici0uz/facen-calculator/tree/master';
 
 function openGithub() {
   window.open(githubPro, '_blank', 'noreferrer');
