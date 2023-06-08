@@ -15,7 +15,12 @@
           </q-toolbar>
           <q-card-section>
             <div class="row">
-              <div class="text-center column">
+              <div
+                class="text-center column"
+                v-bind:style="
+                  $q.screen.lt.sm ? { maxWidth: '10%' } : { maxWidth: '60%' }
+                "
+              >
                 <div
                   class="acumulado"
                   :style="{ backgroundColor: tieneFirma ? 'green' : 'red' }"
@@ -37,13 +42,17 @@
                   {{ firmas }} <b>Firmas</b>
                 </div>
               </div>
-              <q-space />
+              <q-space></q-space>
               <q-table
                 :columns="columns"
                 v-if="tieneFirma"
                 :rows="rows"
                 hide-pagination
                 :title="titulo"
+                dense
+                v-bind:style="
+                  $q.screen.lt.sm ? { maxWidth: '50%' } : { maxWidth: '60%' }
+                "
               >
                 <template v-slot:body-cell-puntaje="props">
                   <q-td
@@ -362,6 +371,10 @@ watch(
 //   }
 //   return score;
 // }
+
+function bodyClass() {
+  return $q.screen.lt.sm ? 'sm' : 'md';
+}
 
 function onReset() {
   pesoExamenes.value = 0;
