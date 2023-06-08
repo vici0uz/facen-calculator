@@ -28,7 +28,7 @@
         no-caps
       />
 
-      <q-btn
+      <!-- <q-btn
         class="q-mt-xl"
         color="white"
         text-color="blue"
@@ -36,7 +36,7 @@
         to="/semipresencial"
         label="Semipresencial"
         no-caps
-      />
+      /> -->
     </div>
   </div>
 </template>

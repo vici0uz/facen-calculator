@@ -6,7 +6,7 @@
         <q-card
           v-bind:style="$q.screen.lt.sm ? { width: '80%' } : { width: '40%' }"
         >
-          <q-toolbar class="bg-green-9 text-center">
+          <q-toolbar class="bg-teal text-center">
             <q-toolbar-title>Calculadora de notas Presencial</q-toolbar-title>
             <q-btn flat round dense @click="openGithub">
               <q-tooltip class="bg-accent">vici0uz</q-tooltip>
@@ -15,25 +15,57 @@
           </q-toolbar>
           <q-card-section>
             <div class="row">
-              <div class="text-center">
+              <div class="text-center column">
                 <div
                   class="acumulado"
                   :style="{ backgroundColor: tieneFirma ? 'green' : 'red' }"
                   v-if="acumulado != 0"
                 >
+                  <b>Acumulado:</b>
                   <h2>{{ acumulado }}</h2>
+                </div>
+                <div
+                  :class="sumatoria > 40 ? 'bg-red' : 'bg-teal'"
+                  v-if="sumatoria > 0"
+                >
+                  <q-tooltip class="bg-teal"
+                    >La sumatoria de los pesos debe ser igual a 40</q-tooltip
+                  >
+                  Total pesos:<b>{{ sumatoria }}</b>
                 </div>
                 <div class="firmas" v-if="firmas > 0">
                   {{ firmas }} <b>Firmas</b>
                 </div>
               </div>
-              <q-space></q-space>
+              <q-space />
               <q-table
                 :columns="columns"
                 v-if="tieneFirma"
                 :rows="rows"
                 hide-pagination
-              ></q-table>
+                :title="titulo"
+              >
+                <template v-slot:body-cell-puntaje="props">
+                  <q-td
+                    :style="{
+                      backgroundColor: props.row.puntaje > 100 ? 'red' : 'white'
+                    }"
+                  >
+                    {{ props.row.puntaje }}
+                  </q-td>
+                </template>
+                <template v-slot:body-cell-nota="props">
+                  <q-td
+                    ali
+                    :style="{
+                      backgroundColor: props.row.puntaje > 100 ? 'red' : 'white'
+                    }"
+                  >
+                    {{ props.row.nota }}
+                  </q-td>
+                </template>
+                ></q-table
+              >
               <!-- <div class="badge" v-if="firmas > 0">
                 <div class="text-center">
                   <h3>
@@ -175,13 +207,11 @@
               </div>
               <div class="flex-center flex">
                 <q-btn
-                  label="Reset"
-                  type="reset"
-                  color="primary"
-                  flat
-                  class="q-ml-sm"
-                  icon="mail"
-                />
+                  color="teal"
+                  icon="refresh"
+                  label="reset"
+                  @click="onReset"
+                ></q-btn>
               </div>
             </q-form>
           </q-card-section>
@@ -192,7 +222,9 @@
 </template>
 <script setup lang="ts">
 import { ref, watch } from 'vue';
+import { useQuasar } from 'quasar';
 
+const $q = useQuasar();
 const pesoExamenes = ref(0);
 const pesoTP = ref(0);
 const pesoParticipacion = ref(0);
@@ -210,9 +242,18 @@ const acumulado = ref(0);
 const firmas = ref(0);
 const formRef = ref();
 const rows = ref([]);
+const sumatoria = ref(0);
+const titulo = 'PUNTAJES EN EL EXAMEN FINAL';
 const columns = [
   { name: 'nota', field: 'nota', label: 'Nota', align: 'center' },
-  { name: 'puntaje', field: 'puntaje', label: 'Puntaje' }
+  { name: 'puntaje', field: 'puntaje', label: 'Puntaje', align: 'center' }
+];
+
+const notas = [
+  { nota: 2, divisor: 60 },
+  { nota: 3, divisor: 70 },
+  { nota: 4, divisor: 80 },
+  { nota: 5, divisor: 90 }
 ];
 const githubPro = 'https://github.com/vici0uz/facen-calculator/tree/master';
 
@@ -221,35 +262,40 @@ function openGithub() {
 }
 
 function rowMaker() {
-  const notas = [
-    { nota: 2, divisor: 60 },
-    { nota: 3, divisor: 70 },
-    { nota: 4, divisor: 80 },
-    { nota: 5, divisor: 90 }
-  ];
   rows.value.length = 0;
   notas.forEach((el, index) => {
     const row = {
       nota: el.nota,
-      puntaje: Math.round(
-        (el.divisor * 100) / el.divisor - (acumulado.value * 40) / el.divisor
-      )
+      puntaje: Math.round((el.divisor * 100) / 60 - (acumulado.value * 40) / 60)
     };
     rows.value.push(row);
   });
 }
+
 function checkVals(vals) {
   if (Number(vals) > 0) {
     let total: number =
       Number(pesoExamenes.value ? pesoExamenes.value : 0) +
       Number(pesoParticipacion.value ? pesoParticipacion.value : 0) +
       Number(pesoTP.value ? pesoTP.value : 0);
-    if (total > 100) {
+    console.log(total);
+    sumatoria.value = total;
+    if (total > 40) {
+      $q.notify({
+        message: 'La suma de los pesos debe ser igual a 40',
+        actions: [{ label: 'Ok' }]
+      });
       return false;
     }
+  } else if (Number(vals) == 0) {
+    sumatoria.value = 0;
   }
   return true;
 }
+
+// fuction checkSumatoria(){
+
+// }
 watch(
   () => [
     primerParcial.value,
@@ -262,32 +308,42 @@ watch(
   ],
   () => {
     let puntaje = 0;
-    if (pesoExamenes.value != 0) {
-      if (primerParcial.value != 0 && segundoParcial.value) {
+    if (pesoExamenes.value != 0 && pesoExamenes.value <= 100) {
+      if (
+        primerParcial.value != 0 &&
+        primerParcial.value <= 100 &&
+        segundoParcial.value &&
+        segundoParcial.value <= 100
+      ) {
         puntaje =
-          ((Number(primerParcial.value) +
-            Number(segundoParcial.value.valueOf())) /
-            2) *
+          ((Number(primerParcial.value) + Number(segundoParcial.value)) / 2) *
           (pesoExamenes.value / 40);
       }
       if (tieneParticipacion.value) {
-        puntaje += (Number(participacion.value) * pesoParticipacion.value) / 40;
+        if (participacion.value && participacion.value <= 100) {
+          puntaje +=
+            (Number(participacion.value) * pesoParticipacion.value) / 40;
+        }
       }
       if (tieneTP.value) {
-        puntaje += (Number(trabajoPractico.value) * pesoTP.value) / 40;
+        if (trabajoPractico.value && trabajoPractico.value <= 100) {
+          puntaje += (Number(trabajoPractico.value) * pesoTP.value) / 40;
+        }
       }
     }
-    acumulado.value = puntaje;
-    if (acumulado.value >= 50) {
-      tieneFirma.value = true;
-      firmas.value = 1;
-      if (acumulado.value >= 60) {
-        firmas.value = 2;
+    if (puntaje <= 100) {
+      acumulado.value = Math.round(puntaje * 100) / 100;
+      if (acumulado.value >= 50) {
+        tieneFirma.value = true;
+        firmas.value = 1;
+        if (acumulado.value >= 60) {
+          firmas.value = 2;
+        }
+        rowMaker();
+      } else {
+        tieneFirma.value = false;
+        firmas.value = 0;
       }
-      rowMaker();
-    } else {
-      tieneFirma.value = false;
-      firmas.value = 0;
     }
   }
 );
@@ -311,6 +367,11 @@ function onReset() {
   pesoExamenes.value = 0;
   primerParcial.value = 0;
   segundoParcial.value = 0;
+  pesoTP.value = 0;
+  tieneTP.value = false;
+  tieneParticipacion.value = false;
+  participacion.value = 0;
+  sumatoria.value = 0;
 }
 </script>
 <style lang="scss">
@@ -329,5 +390,9 @@ function onReset() {
 }
 .firmas {
   background-color: yellow;
+}
+
+.row-red {
+  background-color: red;
 }
 </style>
