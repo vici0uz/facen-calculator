@@ -75,14 +75,6 @@
                 </template>
                 ></q-table
               >
-              <!-- <div class="badge" v-if="firmas > 0">
-                <div class="text-center">
-                  <h3>
-                    <span>{{ firmas }}</span>
-                  </h3>
-                  <p>Firmas</p>
-                </div>
-              </div> -->
             </div>
           </q-card-section>
           <q-card-section>
@@ -132,8 +124,6 @@
                   dense
                 ></q-input>
               </div>
-              <!-- </q-card-section> -->
-              <!-- <q-card-section> -->
               <q-toggle
                 size="70px"
                 color="green"
@@ -156,7 +146,6 @@
                     (val) =>
                       checkVals(val) ||
                       'La suma de los pesos no debe ser mayor a 40'
-                    // (val) => Number(val) < 100 || 'No puede ser mayor a 100'
                   ]"
                 />
                 <q-space />
@@ -171,7 +160,6 @@
                   :rules="[
                     (val) => (tieneTP && !!val) || 'Requerido',
                     (val) => Number(val) <= 100 || 'No puede ser mayor a 100'
-                    // (val) => Number(val) < 100 || 'No puede ser mayor a 100'
                   ]"
                 />
               </div>
@@ -210,7 +198,6 @@
                   :rules="[
                     (val) => (tieneTP && !!val) || 'Requerido',
                     (val) => Number(val) <= 100 || 'No puede ser mayor a 100'
-                    // (val) => Number(val) < 100 || 'No puede ser mayor a 100'
                   ]"
                 />
               </div>
@@ -356,25 +343,6 @@ watch(
     }
   }
 );
-
-// function getAcumulado() {
-//   let score = 0;
-//   if (peso_examenes.value != 0) {
-//     let examenes = 0;
-//     if (primer_parcial.value != 0) {
-//       examenes + primer_parcial.value.valueOf();
-//     }
-//     if (segundo_parcial.value != 0) {
-//       examenes + segundo_parcial.value.valueOf();
-//     }
-//     score = examenes / 2;
-//   }
-//   return score;
-// }
-
-function bodyClass() {
-  return $q.screen.lt.sm ? 'sm' : 'md';
-}
 
 function onReset() {
   pesoExamenes.value = 0;
