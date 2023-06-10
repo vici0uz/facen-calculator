@@ -11,10 +11,9 @@ const routes: RouteRecordRaw[] = [
     component: () => import('pages/HomePage.vue')
   },
   {
-    path: '/presencial',
+    path: '/calcnotes/:mode',
     component: () => import('layouts/CalcNote.vue')
   },
-
   // Always leave this as last one,
   // but you can also remove it
   {

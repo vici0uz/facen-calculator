@@ -2,7 +2,7 @@
   <div
     class="fullscreen bg-blue text-white text-center q-pa-md flex flex-center"
   >
-    <q-pa-md>
+    <div>
       <q-img
         src="../assets/st_jaka.webp"
         style="max-height: 300px; max-width: 240px"
@@ -20,13 +20,22 @@
             color="white"
             text-color="blue"
             unelevated
-            to="/presencial"
+            to="/calcnotes/presencial"
             label="Presencial"
+            no-caps
+          />
+          <q-btn
+            class="q-mt-xl"
+            color="white"
+            text-color="blue"
+            unelevated
+            to="/calcnotes/semipres"
+            label="Semipresencial"
             no-caps
           />
         </div>
       </div>
-    </q-pa-md>
+    </div>
   </div>
 </template>
 

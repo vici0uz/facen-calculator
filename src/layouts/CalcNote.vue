@@ -7,7 +7,22 @@
           v-bind:style="$q.screen.lt.sm ? { width: '80%' } : { width: '40%' }"
         >
           <q-toolbar class="bg-teal text-center">
-            <q-toolbar-title>Calculadora de notas Presencial</q-toolbar-title>
+            <q-btn
+              flat
+              round
+              dense
+              icon="home"
+              class="q-mr-sm"
+              unelevated
+              title="Inicio"
+              to="/"
+            />
+            <q-toolbar-title
+              >Calculadora de notas
+              {{
+                calcMode == 'presencial' ? 'presencial' : 'semipresencial'
+              }}</q-toolbar-title
+            >
             <q-btn flat round dense @click="openGithub">
               <q-tooltip class="bg-accent">vici0uz</q-tooltip>
               <q-icon name="fa-brands fa-github" />
@@ -33,9 +48,7 @@
                   :class="sumatoria > 40 ? 'bg-red' : 'bg-teal'"
                   v-if="sumatoria > 0"
                 >
-                  <q-tooltip class="bg-teal"
-                    >La sumatoria de los pesos debe ser igual a 40</q-tooltip
-                  >
+                  <q-tooltip class="bg-teal">{{ tip_pesos }}</q-tooltip>
                   Total pesos:<b>{{ sumatoria }}</b>
                 </div>
                 <div class="firmas" v-if="firmas > 0">
@@ -57,7 +70,7 @@
                 <template v-slot:body-cell-puntaje="props">
                   <q-td
                     :style="{
-                      backgroundColor: props.row.puntaje > 100 ? 'red' : 'white'
+                      backgroundColor: props.row.puntaje > 100 ? 'red' : 'green'
                     }"
                   >
                     {{ props.row.puntaje }}
@@ -87,10 +100,8 @@
                   label="Peso examenes"
                   :rules="[
                     (val) => !!val || 'Requerido',
-                    (val) => Number(val) <= 100 || 'No puede ser mayor a 100',
-                    (val) =>
-                      checkVals(val) ||
-                      'La suma de los pesos no debe ser mayor a 40'
+                    (val) => Number(val) <= 100 || msg_max_acumulado,
+                    (val) => checkVals(val) || msg_max_pesos
                   ]"
                   prefix="%"
                   clearable
@@ -104,7 +115,7 @@
                   label="Primer parcial"
                   :rules="[
                     (val) => !!val || 'Requerido',
-                    (val) => Number(val) <= 100 || 'No puede ser mayor a 100'
+                    (val) => Number(val) <= 100 || msg_max_acumulado
                   ]"
                   prefix="%"
                   clearable
@@ -117,7 +128,7 @@
                   label="Segundo parcial o recuperatorio"
                   :rules="[
                     (val) => !!val || 'Requerido',
-                    (val) => Number(val) <= 100 || 'No puede ser mayor a 100'
+                    (val) => Number(val) <= 100 || msg_max_acumulado
                   ]"
                   prefix="%"
                   clearable
@@ -129,37 +140,35 @@
                 color="green"
                 v-model="tieneTP"
                 val="true"
-                label="Trabajo Práctico"
+                :label="labl1"
               />
 
               <div class="row" v-if="tieneTP">
                 <q-input
                   type="number"
                   v-model="pesoTP"
-                  label="Peso trabajo práctico"
+                  :label="labelField21"
                   prefix="%"
                   clearable
                   dense
                   :rules="[
                     (val) => (tieneTP && !!val) || 'Requerido',
-                    (val) => Number(val) <= 100 || 'No puede ser mayor a 100',
-                    (val) =>
-                      checkVals(val) ||
-                      'La suma de los pesos no debe ser mayor a 40'
+                    (val) => Number(val) <= 100 || msg_max_acumulado,
+                    (val) => checkVals(val) || msg_max_pesos
                   ]"
                 />
                 <q-space />
                 <q-input
                   type="number"
                   v-model="trabajoPractico"
-                  label="Trabajo práctico"
+                  :label="labelField12"
                   prefix="%"
                   v-if="tieneTP"
                   clearable
                   dense
                   :rules="[
                     (val) => (tieneTP && !!val) || 'Requerido',
-                    (val) => Number(val) <= 100 || 'No puede ser mayor a 100'
+                    (val) => Number(val) <= 100 || msg_max_acumulado
                   ]"
                 />
               </div>
@@ -168,22 +177,20 @@
                 color="green"
                 v-model="tieneParticipacion"
                 val="true"
-                label="Participación"
+                :label="labl2"
               />
               <div class="row" v-if="tieneParticipacion">
                 <q-input
                   type="number"
                   v-model="pesoParticipacion"
-                  label="Peso Participación"
+                  :label="labelField21"
                   prefix="%"
                   clearable
                   dense
                   :rules="[
                     (val) => (tieneParticipacion && !!val) || 'Requerido',
-                    (val) => Number(val) <= 100 || 'No puede ser mayor a 100',
-                    (val) =>
-                      checkVals(val) ||
-                      'La suma de los pesos no debe ser mayor a 40'
+                    (val) => Number(val) <= 100 || msg_max_acumulado,
+                    (val) => checkVals(val) || msg_max_pesos
                   ]"
                 />
                 <q-space />
@@ -191,13 +198,13 @@
                 <q-input
                   type="number"
                   v-model="participacion"
-                  label="Participación"
+                  :label="labelField22"
                   prefix="%"
                   clearable
                   dense
                   :rules="[
                     (val) => (tieneTP && !!val) || 'Requerido',
-                    (val) => Number(val) <= 100 || 'No puede ser mayor a 100'
+                    (val) => Number(val) <= 100 || msg_max_acumulado
                   ]"
                 />
               </div>
@@ -217,9 +224,11 @@
   </q-layout>
 </template>
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { ref, watch, onMounted } from 'vue';
 import { useQuasar } from 'quasar';
+import { useRoute } from 'vue-router';
 
+const route = useRoute();
 const $q = useQuasar();
 const pesoExamenes = ref(0);
 const pesoTP = ref(0);
@@ -239,12 +248,40 @@ const firmas = ref(0);
 const formRef = ref();
 const rows = ref([]);
 const sumatoria = ref(0);
+
+//LABELS
 const titulo = 'PUNTAJES EN EL EXAMEN FINAL';
+const msg_max_pesos = 'La suma de los pesos no debe ser mayor a 40';
+const tip_pesos = 'La sumatoria de los pesos debe ser igual a 40';
+const msg_max_acumulado = 'No puede ser mayor a 100';
+
+const calcMode = ref('presencial');
+const labl1 = ref('Trabajo practico');
+const labl2 = ref('Participación');
+const labelField11 = ref('Peso trabajo practico');
+const labelField12 = ref('Trabajo practico');
+
+const labelField21 = ref('Peso participación');
+const labelField22 = ref('Participación');
+
 const columns = [
   { name: 'nota', field: 'nota', label: 'Nota', align: 'center' },
   { name: 'puntaje', field: 'puntaje', label: 'Puntaje', align: 'center' }
 ];
 
+onMounted(() => {
+  calcMode.value = route.params.mode;
+  labl1.value = calcMode.value == 'presencial' ? 'Trabajo Practico' : 'AA';
+  labl2.value = calcMode.value == 'presencial' ? 'Participación' : 'AI';
+  labelField11.value =
+    calcMode.value == 'presencial' ? 'Peso trabajo practico' : 'Peso AA';
+  labelField12.value =
+    calcMode.value == 'presencial' ? 'Trabajo practico' : 'AA';
+  labelField21.value =
+    calcMode.value == 'presencial' ? 'Peso participación' : 'Peso AI';
+  labelField22.value =
+    calcMode.value == 'presencial' ? 'Peso participación' : 'AI';
+});
 const notas = [
   { nota: 2, divisor: 60 },
   { nota: 3, divisor: 70 },
