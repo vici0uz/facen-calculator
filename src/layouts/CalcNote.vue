@@ -147,7 +147,7 @@
                 <q-input
                   type="number"
                   v-model="pesoTP"
-                  :label="labelField21"
+                  :label="labelField11"
                   prefix="%"
                   clearable
                   dense
