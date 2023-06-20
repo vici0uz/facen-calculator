@@ -9,12 +9,14 @@
         class="text-center rounded-borders"
       >
         <div class="absolute-bottom text-subtitle1 text-center">
-          Escucha mis plegarias🙏
+          Escucha mis plegarias🙏 🐊
         </div>
       </q-img>
       <div class="row">
         <div>
-          <div class="text-h2" style="opacity: 0.4">Calculadora de notas</div>
+          <div class="text-h2" style="opacity: 0.4">
+            Calculadora de Firmas FACEN 🐊
+          </div>
           <q-btn
             class="q-mt-xl"
             color="white"

@@ -17,8 +17,8 @@
               title="Inicio"
               to="/"
             />
-            <q-toolbar-title
-              >Calculadora de notas
+            <q-toolbar-title>
+              🐊 Calculadora de notas
               {{
                 calcMode == 'presencial' ? 'presencial' : 'semipresencial'
               }}</q-toolbar-title
