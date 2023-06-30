@@ -39,7 +39,7 @@
                 <div
                   class="acumulado"
                   :style="{ backgroundColor: tieneFirma ? 'green' : 'red' }"
-                  v-if="acumulado != 0"
+                  v-if="acumulado > 0"
                 >
                   <b>Acumulado:</b>
                   <h2>{{ acumulado }}</h2>
@@ -103,7 +103,7 @@
                     (val) => Number(val) <= 100 || msg_max_acumulado,
                     (val) => checkVals(val) || msg_max_pesos
                   ]"
-                  prefix="%"
+                  suffix="%"
                   clearable
                   dense
                 ></q-input>
@@ -117,7 +117,7 @@
                     (val) => !!val || 'Requerido',
                     (val) => Number(val) <= 100 || msg_max_acumulado
                   ]"
-                  prefix="%"
+                  suffix="%"
                   clearable
                   dense
                 />
@@ -130,7 +130,7 @@
                     (val) => !!val || 'Requerido',
                     (val) => Number(val) <= 100 || msg_max_acumulado
                   ]"
-                  prefix="%"
+                  suffix="%"
                   clearable
                   dense
                 ></q-input>
@@ -148,7 +148,7 @@
                   type="number"
                   v-model="pesoTP"
                   :label="labelField11"
-                  prefix="%"
+                  suffix="%"
                   clearable
                   dense
                   :rules="[
@@ -162,7 +162,7 @@
                   type="number"
                   v-model="trabajoPractico"
                   :label="labelField12"
-                  prefix="%"
+                  suffix="%"
                   v-if="tieneTP"
                   clearable
                   dense
@@ -184,7 +184,7 @@
                   type="number"
                   v-model="pesoParticipacion"
                   :label="labelField21"
-                  prefix="%"
+                  suffix="%"
                   clearable
                   dense
                   :rules="[
@@ -199,7 +199,7 @@
                   type="number"
                   v-model="participacion"
                   :label="labelField22"
-                  prefix="%"
+                  suffix="%"
                   clearable
                   dense
                   :rules="[
@@ -230,21 +230,21 @@ import { useRoute } from 'vue-router';
 
 const route = useRoute();
 const $q = useQuasar();
-const pesoExamenes = ref(0);
-const pesoTP = ref(0);
-const pesoParticipacion = ref(0);
+const pesoExamenes = ref();
+const pesoTP = ref();
+const pesoParticipacion = ref();
 
 const tieneFirma = ref(false);
 const tieneTP = ref(false);
 const tieneParticipacion = ref(false);
 
-const primerParcial = ref(0);
-const segundoParcial = ref(0);
-const trabajoPractico = ref(0);
-const participacion = ref(0);
+const primerParcial = ref();
+const segundoParcial = ref();
+const trabajoPractico = ref();
+const participacion = ref();
 
-const acumulado = ref(0);
-const firmas = ref(0);
+const acumulado = ref();
+const firmas = ref();
 const formRef = ref();
 const rows = ref([]);
 const sumatoria = ref(0);

@@ -3,7 +3,7 @@
     class="fullscreen bg-blue text-white text-center q-pa-md flex flex-center"
   >
     <div>
-      <q-img
+      <!-- <q-img
         src="../assets/st_jaka.webp"
         style="max-height: 300px; max-width: 240px"
         class="text-center rounded-borders"
@@ -11,10 +11,10 @@
         <div class="absolute-bottom text-subtitle1 text-center">
           Escucha mis plegarias🙏 🐊
         </div>
-      </q-img>
+      </q-img> -->
       <div class="row">
         <div>
-          <div class="text-h2" style="opacity: 0.4">
+          <div class="text-h2" style="opacity: 0.4; color: black">
             Calculadora de Firmas FACEN 🐊
           </div>
           <q-btn
