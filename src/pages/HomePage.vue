@@ -1,6 +1,6 @@
 <template>
   <div
-    class="fullscreen bg-blue text-white text-center q-pa-md flex flex-center"
+    class="fullscreen bg-purple-4 text-white text-center q-pa-md flex flex-center"
   >
     <div>
       <!-- <q-img
@@ -14,8 +14,8 @@
       </q-img> -->
       <div class="row">
         <div>
-          <div class="text-h2" style="opacity: 0.4; color: black">
-            Calculadora de Firmas FACEN 🐊
+          <div class="text-h2" style="opacity: 0.7; color: black">
+            Calculadora de Firmas FACEN 🐊 ❤️
           </div>
           <q-btn
             class="q-mt-xl"
@@ -35,13 +35,43 @@
             label="Semipresencial"
             no-caps
           />
+          <!-- <div class="q-pa-md"> -->
+          <!-- <q-carousel
+            v-model="slide"
+            transition-prev="slide-right"
+            transition-next="slide-left"
+            arrows
+            navigation
+            infinite
+          >
+            <q-carousel-slide :name="1">
+              <q-img
+                fit="contain"
+                src="~/assets/firma1.jpeg"
+                width="70%"
+                height="100%"
+              />
+            </q-carousel-slide>
+            <q-carousel-slide :name="2">
+              <q-img fit="contain" src="~/assets/firma2.jpeg" />
+            </q-carousel-slide>
+            <q-carousel-slide :name="3">
+              <q-img fit="contain" src="~/assets/firma3.jpeg" />
+            </q-carousel-slide>
+          </q-carousel> -->
         </div>
       </div>
+      <!-- </div> -->
     </div>
   </div>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { ref } from 'vue';
+
+const slide = ref(1);
+</script>
+
 <style scoped lang="scss">
 .q-btn {
   margin-left: 5px;

@@ -2,7 +2,7 @@
   <!-- <q-layout view="lHh Lpr lFf"> -->
   <q-layout>
     <q-page-container>
-      <q-page class="flex bg-image flex-center bg-grey-4">
+      <q-page class="flex bg-image flex-center bg-purple-3">
         <q-card
           v-bind:style="$q.screen.lt.sm ? { width: '80%' } : { width: '40%' }"
         >
@@ -95,17 +95,19 @@
               <!-- <q-card-section> -->
               <div class="row">
                 <q-input
-                  v-model="pesoExamenes"
+                  v-model.number="pesoExamenes"
                   type="number"
                   label="Peso examenes"
                   :rules="[
                     (val) => !!val || 'Requerido',
+                    (val) => checkTotal(val) || msg_max_peso_examen,
                     (val) => Number(val) <= 100 || msg_max_acumulado,
                     (val) => checkVals(val) || msg_max_pesos
                   ]"
                   suffix="%"
                   clearable
                   dense
+                  mask="#"
                 ></q-input>
               </div>
               <div class="row">
@@ -254,6 +256,7 @@ const titulo = 'PUNTAJES EN EL EXAMEN FINAL';
 const msg_max_pesos = 'La suma de los pesos no debe ser mayor a 40';
 const tip_pesos = 'La sumatoria de los pesos debe ser igual a 40';
 const msg_max_acumulado = 'No puede ser mayor a 100';
+const msg_max_peso_examen = 'El peso de los examenes nunca puede ser mayor a 40'
 
 const calcMode = ref('presencial');
 const labl1 = ref('Trabajo practico');
@@ -280,7 +283,7 @@ onMounted(() => {
   labelField21.value =
     calcMode.value == 'presencial' ? 'Peso participación' : 'Peso AI';
   labelField22.value =
-    calcMode.value == 'presencial' ? 'Peso participación' : 'AI';
+    calcMode.value == 'presencial' ? 'Participación' : 'AI';
 });
 const notas = [
   { nota: 2, divisor: 60 },
@@ -303,6 +306,18 @@ function rowMaker() {
     };
     rows.value.push(row);
   });
+}
+
+function checkTotal(vals){
+  if (Number(vals)>0){
+    if (!(Number(vals)<40)){
+      pesoExamenes.value = 40;
+      return false;
+    } else{
+    return true;
+  }
+  }
+
 }
 
 function checkVals(vals) {
@@ -336,20 +351,24 @@ watch(
     pesoExamenes.value,
     pesoParticipacion.value,
     participacion.value,
+    tieneTP.value,
+    tieneParticipacion.value,
     pesoTP.value,
     trabajoPractico.value
   ],
   () => {
     let puntaje = 0;
-    if (pesoExamenes.value != 0 && pesoExamenes.value <= 100) {
+    if (pesoExamenes.value != 0 && pesoExamenes.value <= 40) {
       if (
         primerParcial.value != 0 &&
-        primerParcial.value <= 100 &&
-        segundoParcial.value &&
-        segundoParcial.value <= 100
+        primerParcial.value <= 100
+        // segundoParcial.value <= 100
       ) {
         puntaje =
-          ((Number(primerParcial.value) + Number(segundoParcial.value)) / 2) *
+          (
+            (Number(primerParcial.value) +
+            Number((segundoParcial.value !=0 && segundoParcial.value <=100)? Number(segundoParcial.value)  : 0)
+            ) / 2) *
           (pesoExamenes.value / 40);
       }
       if (tieneParticipacion.value) {
@@ -357,11 +376,15 @@ watch(
           puntaje +=
             (Number(participacion.value) * pesoParticipacion.value) / 40;
         }
+      } else {
+        participacion.value = pesoParticipacion.value = false;
       }
       if (tieneTP.value) {
         if (trabajoPractico.value && trabajoPractico.value <= 100) {
           puntaje += (Number(trabajoPractico.value) * pesoTP.value) / 40;
         }
+      } else {
+        trabajoPractico.value = pesoTP.value = false;
       }
     }
     if (puntaje <= 100) {
@@ -382,13 +405,14 @@ watch(
 );
 
 function onReset() {
-  pesoExamenes.value = 0;
-  primerParcial.value = 0;
-  segundoParcial.value = 0;
-  pesoTP.value = 0;
+  pesoExamenes.value = false;
+  primerParcial.value = false;
+  segundoParcial.value = false;
+  pesoTP.value = false;
   tieneTP.value = false;
   tieneParticipacion.value = false;
-  participacion.value = 0;
+  pesoParticipacion.value = false;
+  participacion.value = false;
   sumatoria.value = 0;
 }
 </script>
