@@ -1,7 +1,5 @@
 <template>
-  <div
-    class="fullscreen bg-purple-4 text-white text-center q-pa-md flex flex-center"
-  >
+  <div class="fullscreen bg-light-green-3 text-white text-center q-pa-md flex flex-center">
     <div>
       <!-- <q-img
         src="../assets/st_jaka.webp"
@@ -17,24 +15,10 @@
           <div class="text-h2" style="opacity: 0.7; color: black">
             Calculadora de Firmas FACEN 🐊 ❤️
           </div>
-          <q-btn
-            class="q-mt-xl"
-            color="white"
-            text-color="blue"
-            unelevated
-            to="/calcnotes/presencial"
-            label="Presencial"
-            no-caps
-          />
-          <q-btn
-            class="q-mt-xl"
-            color="white"
-            text-color="blue"
-            unelevated
-            to="/calcnotes/semipres"
-            label="Semipresencial"
-            no-caps
-          />
+          <q-btn class="q-mt-xl" color="white" text-color="blue" unelevated to="/calcnotes/presencial"
+            label="Presencial" no-caps />
+          <q-btn class="q-mt-xl" color="white" text-color="blue" unelevated to="/calcnotes/semipres"
+            label="Semipresencial" no-caps />
           <!-- <div class="q-pa-md"> -->
           <!-- <q-carousel
             v-model="slide"

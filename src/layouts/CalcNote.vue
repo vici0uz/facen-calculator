@@ -2,27 +2,15 @@
   <!-- <q-layout view="lHh Lpr lFf"> -->
   <q-layout>
     <q-page-container>
-      <q-page class="flex bg-image flex-center bg-purple-3">
-        <q-card
-          v-bind:style="$q.screen.lt.sm ? { width: '80%' } : { width: '40%' }"
-        >
+      <q-page class="flex bg-image flex-center bg-light-green-3">
+        <q-card v-bind:style="$q.screen.lt.sm ? { width: '80%' } : { width: '40%' }">
           <q-toolbar class="bg-teal text-center">
-            <q-btn
-              flat
-              round
-              dense
-              icon="home"
-              class="q-mr-sm"
-              unelevated
-              title="Inicio"
-              to="/"
-            />
+            <q-btn flat round dense icon="home" class="q-mr-sm" unelevated title="Inicio" to="/" />
             <q-toolbar-title>
               🐊 Calculadora de notas
               {{
-                calcMode == 'presencial' ? 'presencial' : 'semipresencial'
-              }}</q-toolbar-title
-            >
+          calcMode == 'presencial' ? 'presencial' : 'semipresencial'
+        }}</q-toolbar-title>
             <q-btn flat round dense @click="openGithub">
               <q-tooltip class="bg-accent">vici0uz</q-tooltip>
               <q-icon name="fa-brands fa-github" />
@@ -30,24 +18,13 @@
           </q-toolbar>
           <q-card-section>
             <div class="row">
-              <div
-                class="text-center column"
-                v-bind:style="
-                  $q.screen.lt.sm ? { maxWidth: '10%' } : { maxWidth: '60%' }
-                "
-              >
-                <div
-                  class="acumulado"
-                  :style="{ backgroundColor: tieneFirma ? 'green' : 'red' }"
-                  v-if="acumulado > 0"
-                >
+              <div class="text-center column" v-bind:style="$q.screen.lt.sm ? { maxWidth: '10%' } : { maxWidth: '60%' }
+          ">
+                <div class="acumulado" :style="{ backgroundColor: tieneFirma ? 'green' : 'red' }" v-if="acumulado > 0">
                   <b>Acumulado:</b>
                   <h2>{{ acumulado }}</h2>
                 </div>
-                <div
-                  :class="sumatoria > 40 ? 'bg-red' : 'bg-teal'"
-                  v-if="sumatoria > 0"
-                >
+                <div :class="sumatoria > 40 ? 'bg-red' : 'bg-teal'" v-if="sumatoria > 0">
                   <q-tooltip class="bg-teal">{{ tip_pesos }}</q-tooltip>
                   Total pesos:<b>{{ sumatoria }}</b>
                 </div>
@@ -56,167 +33,80 @@
                 </div>
               </div>
               <q-space></q-space>
-              <q-table
-                :columns="columns"
-                v-if="tieneFirma"
-                :rows="rows"
-                hide-pagination
-                :title="titulo"
-                dense
-                v-bind:style="
-                  $q.screen.lt.sm ? { maxWidth: '50%' } : { maxWidth: '60%' }
-                "
-              >
+              <q-table :columns="columns" v-if="tieneFirma" :rows="rows" hide-pagination :title="titulo" dense
+                v-bind:style="$q.screen.lt.sm ? { maxWidth: '50%' } : { maxWidth: '60%' }
+          ">
                 <template v-slot:body-cell-puntaje="props">
-                  <q-td
-                    :style="{
-                      backgroundColor: props.row.puntaje > 100 ? 'red' : 'green'
-                    }"
-                  >
+                  <q-td :style="{
+          backgroundColor: props.row.puntaje > 100 ? 'red' : 'green'
+        }">
                     {{ props.row.puntaje }}
                   </q-td>
                 </template>
                 <template v-slot:body-cell-nota="props">
-                  <q-td
-                    ali
-                    :style="{
-                      backgroundColor: props.row.puntaje > 100 ? 'red' : 'white'
-                    }"
-                  >
+                  <q-td ali :style="{
+          backgroundColor: props.row.puntaje > 100 ? 'red' : 'white'
+        }">
                     {{ props.row.nota }}
                   </q-td>
                 </template>
-                ></q-table
-              >
+                ></q-table>
             </div>
           </q-card-section>
           <q-card-section>
             <q-form @reset="onReset" class="q-gutter-md" ref="formRef">
               <!-- <q-card-section> -->
               <div class="row">
-                <q-input
-                  v-model.number="pesoExamenes"
-                  type="number"
-                  label="Peso examenes"
-                  :rules="[
-                    (val) => !!val || 'Requerido',
-                    (val) => checkTotal(val) || msg_max_peso_examen,
-                    (val) => Number(val) <= 100 || msg_max_acumulado,
-                    (val) => checkVals(val) || msg_max_pesos
-                  ]"
-                  suffix="%"
-                  clearable
-                  dense
-                  mask="#"
-                ></q-input>
+                <q-input v-model.number="pesoExamenes" type="number" label="Peso examenes" :rules="[
+          (val) => !!val || 'Requerido',
+          (val) => checkTotal(val) || msg_max_peso_examen,
+          (val) => Number(val) <= 100 || msg_max_acumulado,
+          (val) => checkVals(val) || msg_max_pesos
+        ]" suffix="%" clearable dense mask="#"></q-input>
               </div>
               <div class="row">
-                <q-input
-                  v-model="primerParcial"
-                  type="number"
-                  label="Primer parcial"
-                  :rules="[
-                    (val) => !!val || 'Requerido',
-                    (val) => Number(val) <= 100 || msg_max_acumulado
-                  ]"
-                  suffix="%"
-                  clearable
-                  dense
-                />
+                <q-input v-model="primerParcial" type="number" label="Primer parcial" :rules="[
+          (val) => !!val || 'Requerido',
+          (val) => Number(val) <= 100 || msg_max_acumulado
+        ]" suffix="%" clearable dense />
                 <q-space></q-space>
-                <q-input
-                  v-model="segundoParcial"
-                  type="number"
-                  label="Segundo parcial o recuperatorio"
-                  :rules="[
-                    (val) => !!val || 'Requerido',
-                    (val) => Number(val) <= 100 || msg_max_acumulado
-                  ]"
-                  suffix="%"
-                  clearable
-                  dense
-                ></q-input>
+                <q-input v-model="segundoParcial" type="number" label="Segundo parcial o recuperatorio" :rules="[
+          (val) => !!val || 'Requerido',
+          (val) => Number(val) <= 100 || msg_max_acumulado
+        ]" suffix="%" clearable dense></q-input>
               </div>
-              <q-toggle
-                size="70px"
-                color="green"
-                v-model="tieneTP"
-                val="true"
-                :label="labl1"
-              />
+              <q-toggle size="70px" color="green" v-model="tieneTP" val="true" :label="labl1" />
 
               <div class="row" v-if="tieneTP">
-                <q-input
-                  type="number"
-                  v-model="pesoTP"
-                  :label="labelField11"
-                  suffix="%"
-                  clearable
-                  dense
-                  :rules="[
-                    (val) => (tieneTP && !!val) || 'Requerido',
-                    (val) => Number(val) <= 100 || msg_max_acumulado,
-                    (val) => checkVals(val) || msg_max_pesos
-                  ]"
-                />
+                <q-input type="number" v-model="pesoTP" :label="labelField11" suffix="%" clearable dense :rules="[
+          (val) => (tieneTP && !!val) || 'Requerido',
+          (val) => Number(val) <= 100 || msg_max_acumulado,
+          (val) => checkVals(val) || msg_max_pesos
+        ]" />
                 <q-space />
-                <q-input
-                  type="number"
-                  v-model="trabajoPractico"
-                  :label="labelField12"
-                  suffix="%"
-                  v-if="tieneTP"
-                  clearable
-                  dense
-                  :rules="[
-                    (val) => (tieneTP && !!val) || 'Requerido',
-                    (val) => Number(val) <= 100 || msg_max_acumulado
-                  ]"
-                />
+                <q-input type="number" v-model="trabajoPractico" :label="labelField12" suffix="%" v-if="tieneTP"
+                  clearable dense :rules="[
+          (val) => (tieneTP && !!val) || 'Requerido',
+          (val) => Number(val) <= 100 || msg_max_acumulado
+        ]" />
               </div>
-              <q-toggle
-                size="70px"
-                color="green"
-                v-model="tieneParticipacion"
-                val="true"
-                :label="labl2"
-              />
+              <q-toggle size="70px" color="green" v-model="tieneParticipacion" val="true" :label="labl2" />
               <div class="row" v-if="tieneParticipacion">
-                <q-input
-                  type="number"
-                  v-model="pesoParticipacion"
-                  :label="labelField21"
-                  suffix="%"
-                  clearable
-                  dense
+                <q-input type="number" v-model="pesoParticipacion" :label="labelField21" suffix="%" clearable dense
                   :rules="[
-                    (val) => (tieneParticipacion && !!val) || 'Requerido',
-                    (val) => Number(val) <= 100 || msg_max_acumulado,
-                    (val) => checkVals(val) || msg_max_pesos
-                  ]"
-                />
+          (val) => (tieneParticipacion && !!val) || 'Requerido',
+          (val) => Number(val) <= 100 || msg_max_acumulado,
+          (val) => checkVals(val) || msg_max_pesos
+        ]" />
                 <q-space />
 
-                <q-input
-                  type="number"
-                  v-model="participacion"
-                  :label="labelField22"
-                  suffix="%"
-                  clearable
-                  dense
-                  :rules="[
-                    (val) => (tieneTP && !!val) || 'Requerido',
-                    (val) => Number(val) <= 100 || msg_max_acumulado
-                  ]"
-                />
+                <q-input type="number" v-model="participacion" :label="labelField22" suffix="%" clearable dense :rules="[
+          (val) => (tieneTP && !!val) || 'Requerido',
+          (val) => Number(val) <= 100 || msg_max_acumulado
+        ]" />
               </div>
               <div class="flex-center flex">
-                <q-btn
-                  color="teal"
-                  icon="refresh"
-                  label="reset"
-                  @click="onReset"
-                ></q-btn>
+                <q-btn color="teal" icon="refresh" label="reset" @click="onReset"></q-btn>
               </div>
             </q-form>
           </q-card-section>
@@ -308,19 +198,23 @@ function rowMaker() {
   });
 }
 
-function checkTotal(vals){
-  if (Number(vals)>0){
-    if (!(Number(vals)<40)){
+function checkTotal(vals: number) {
+  console.log(vals)
+  if (Number(vals) > 0) {
+    if (!(Number(vals) <= 40)) {
       pesoExamenes.value = 40;
-      return false;
-    } else{
-    return true;
-  }
+      $q.notify({
+        message: msg_max_peso_examen,
+        actions: [{ label: 'Ok' }]
+      })
+    } else {
+      return true;
+    }
   }
 
 }
 
-function checkVals(vals) {
+function checkVals(vals: number) {
   if (Number(vals) > 0) {
     let total: number =
       Number(pesoExamenes.value ? pesoExamenes.value : 0) +
@@ -341,9 +235,7 @@ function checkVals(vals) {
   return true;
 }
 
-// fuction checkSumatoria(){
 
-// }
 watch(
   () => [
     primerParcial.value,
@@ -367,7 +259,7 @@ watch(
         puntaje =
           (
             (Number(primerParcial.value) +
-            Number((segundoParcial.value !=0 && segundoParcial.value <=100)? Number(segundoParcial.value)  : 0)
+              Number((segundoParcial.value != 0 && segundoParcial.value <= 100) ? Number(segundoParcial.value) : 0)
             ) / 2) *
           (pesoExamenes.value / 40);
       }
@@ -421,15 +313,18 @@ function onReset() {
   border: 1px solid black;
   // background-color: green;
 }
+
 .acumulado {
   text-align: center;
 }
+
 .badge {
   border-radius: 50%;
   background-color: yellow;
   width: 120px;
   height: 120px;
 }
+
 .firmas {
   background-color: yellow;
 }
