@@ -14,6 +14,10 @@ const routes: RouteRecordRaw[] = [
     path: '/calcnotes/:mode',
     component: () => import('layouts/CalcNote.vue')
   },
+  {
+    path: '/calcularNotasDesdeFirma',
+    component: () => import('layouts/FirmaNotes.vue')
+  },
   // Always leave this as last one,
   // but you can also remove it
   {
